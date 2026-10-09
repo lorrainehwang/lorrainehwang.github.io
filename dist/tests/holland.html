@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>霍兰德职业兴趣测试（RIASEC）</title>
+<style>
+  :root {
+    --primary: #4a6cf7;
+    --primary-dark: #3a55c4;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #2d3748;
+    --muted: #718096;
+    --border: #e2e8f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  header.site {
+    background: linear-gradient(135deg, #4a6cf7 0%, #7b5cf0 100%);
+    color: #fff;
+    padding: 36px 16px 48px;
+    text-align: center;
+  }
+  header.site h1 { font-size: 26px; letter-spacing: 1px; }
+  header.site p { margin-top: 8px; opacity: .9; font-size: 14px; }
+
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(30, 41, 59, .08);
+    padding: 28px 24px;
+    margin-top: -28px;
+    position: relative;
+  }
+  .hidden { display: none !important; }
+
+  /* ---------- 首页 ---------- */
+  .intro-block h2 { font-size: 20px; margin-bottom: 12px; }
+  .intro-block p { color: var(--muted); font-size: 15px; margin-bottom: 10px; }
+  .type-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin: 18px 0;
+  }
+  .type-chip {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    background: #fafbff;
+  }
+  .type-chip b { display: block; font-size: 14px; margin-bottom: 2px; }
+  .type-chip .code {
+    display: inline-block; background: var(--primary); color: #fff;
+    border-radius: 6px; padding: 0 6px; font-size: 12px; margin-right: 4px;
+  }
+
+  .version-list { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+  .version-card {
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all .15s;
+    background: #fff;
+  }
+  .version-card:hover { border-color: var(--primary); background: #f6f8ff; }
+  .version-card .v-title {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 17px; font-weight: 700;
+  }
+  .version-card .v-badge {
+    font-size: 12px; font-weight: 500; color: var(--primary);
+    background: #eef2ff; border-radius: 99px; padding: 3px 10px;
+  }
+  .version-card .v-desc { font-size: 13.5px; color: var(--muted); margin-top: 6px; }
+
+  .tip-box {
+    background: #fffaf0; border: 1px solid #f6e0b5;
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 13.5px; color: #975a16; margin-top: 16px;
+  }
+  .disclaimer {
+    background: #f7fafc; border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 12.5px; color: var(--muted); margin-top: 14px; line-height: 1.8;
+  }
+
+  .btn {
+    display: block; width: 100%;
+    background: var(--primary); color: #fff;
+    border: none; border-radius: 10px;
+    font-size: 17px; padding: 14px;
+    cursor: pointer; transition: background .2s, transform .1s;
+    margin-top: 18px;
+  }
+  .btn:hover { background: var(--primary-dark); }
+  .btn:active { transform: scale(.98); }
+  .btn.secondary { background: #edf0f7; color: var(--text); margin-top: 10px; }
+  .btn.secondary:hover { background: #e0e5f0; }
+
+  /* ---------- 答题页 ---------- */
+  .progress-wrap { margin-bottom: 20px; }
+  .progress-info {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--muted); margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 8px; background: #e6eaf4; border-radius: 99px; overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #4a6cf7, #7b5cf0);
+    border-radius: 99px;
+    transition: width .3s ease;
+  }
+
+  .question-num { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .question-text { font-size: 20px; font-weight: 600; margin-bottom: 24px; min-height: 60px; }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 17px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+    transition: all .15s;
+    user-select: none;
+  }
+  .option:hover { border-color: var(--primary); background: #f6f8ff; }
+  .option.yes { color: #1c7c46; }
+  .option.yes:hover { border-color: #2f9e5f; background: #f0faf4; }
+  .option.no { color: #b03030; }
+  .option.no:hover { border-color: #d06060; background: #fdf3f3; }
+
+  .quiz-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+  .link-btn {
+    background: none; border: none; color: var(--muted);
+    font-size: 14px; cursor: pointer; padding: 8px;
+  }
+  .link-btn:hover { color: var(--primary); }
+  .link-btn:disabled { opacity: .35; cursor: default; }
+
+  /* ---------- 结果页 ---------- */
+  .result-code { text-align: center; margin-bottom: 6px; }
+  .result-code .code-badge {
+    display: inline-block;
+    font-size: 34px; font-weight: 800; letter-spacing: 4px;
+    background: linear-gradient(135deg, #4a6cf7, #7b5cf0);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin: 0 6px;
+  }
+  .result-code p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+  .tie-note { text-align: center; color: #b7791f; font-size: 13px; margin-bottom: 10px; }
+
+  #radar { display: block; margin: 0 auto; max-width: 100%; }
+
+  .score-list { margin: 20px 0; }
+  .score-row { margin-bottom: 12px; }
+  .score-row .label {
+    display: flex; justify-content: space-between;
+    font-size: 14px; margin-bottom: 4px;
+  }
+  .score-row .bar {
+    height: 10px; background: #edf0f7; border-radius: 99px; overflow: hidden;
+  }
+  .score-row .bar .fill { height: 100%; border-radius: 99px; }
+
+  .result-section { margin-top: 24px; }
+  .result-section h3 {
+    font-size: 17px; margin-bottom: 10px;
+    padding-left: 10px; border-left: 4px solid var(--primary);
+  }
+  .result-section p, .result-section li { font-size: 14.5px; color: #4a5568; }
+  .career-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .career-tag {
+    background: #eef2ff; color: #4053c9;
+    border-radius: 99px; padding: 6px 14px; font-size: 13.5px;
+  }
+  .code-block { margin-bottom: 18px; }
+  .code-block h4 { font-size: 15px; margin-bottom: 6px; color: var(--text); }
+
+  footer.site {
+    text-align: center; color: #a0aec0; font-size: 12px;
+    margin-top: 36px; line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <h1>霍兰德职业兴趣测试</h1>
+  <p>Holland Code · RIASEC 职业倾向测评</p>
+</header>
+
+<div class="container">
+
+  <!-- 首页 -->
+  <div class="card intro-block" id="page-home">
+    <h2>关于本测试</h2>
+    <p>霍兰德职业兴趣测试基于美国约翰·霍普金斯大学心理学教授 John Holland 于 1959 年提出的职业兴趣理论（RIASEC）。该理论认为人格类型、兴趣与职业密切相关，将人的职业兴趣分为六种类型，通过测评可以帮助你发现与自身兴趣最匹配的职业方向。</p>
+    <div class="type-grid">
+      <div class="type-chip"><b><span class="code">R</span>现实型</b>动手操作 · 机械工具</div>
+      <div class="type-chip"><b><span class="code">I</span>研究型</b>分析推理 · 科学探索</div>
+      <div class="type-chip"><b><span class="code">A</span>艺术型</b>创意表达 · 审美想象</div>
+      <div class="type-chip"><b><span class="code">S</span>社会型</b>帮助他人 · 沟通服务</div>
+      <div class="type-chip"><b><span class="code">E</span>管理型</b>领导说服 · 冒险进取</div>
+      <div class="type-chip"><b><span class="code">C</span>常规型</b>条理规范 · 细致有序</div>
+    </div>
+
+    <h2 style="margin-top:22px">选择测试版本</h2>
+    <div class="version-list">
+      <div class="version-card" data-test="t60">
+        <div class="v-title">60 题标准版（SDS）<span class="v-badge">约 5-8 分钟</span></div>
+        <div class="v-desc">最常用的经典版本，回答「是 / 否」。快速了解你的职业兴趣类型，适合时间有限或初次尝试的测试者。</div>
+      </div>
+      <div class="version-card" data-test="t90">
+        <div class="v-title">90 题完整版<span class="v-badge">约 10-15 分钟 · 推荐</span></div>
+        <div class="v-desc">题目覆盖面更广，每种类型 15 道题，回答「符合 / 不符合」。对六种兴趣类型的测量更细致，结果区分度更高。</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      💡 <b>如何选择版本？</b>题目数量越多，对你兴趣倾向的采样就越充分，类型之间的得分差距越明显，测试结果通常也会更清晰、更准确。如果条件允许，建议选择 90 题完整版；如果只想快速了解大概方向，可以先做 60 题版，之后再做 90 题版验证。
+    </div>
+
+    <div class="disclaimer">
+      <b>免责声明</b>：本测试仅供自我探索与职业规划参考，测试结果不构成专业职业咨询、心理咨询或就业指导建议，也不代表对个人能力的评价。职业与专业的选择请结合个人能力、价值观、社会需求等实际情况综合判断，必要时请咨询专业职业规划师或心理咨询师。因使用本测试结果而产生的任何决策，由测试者本人自行承担责任。霍兰德职业兴趣理论（RIASEC）源自 John L. Holland 的公开学术理论。
+    </div>
+  </div>
+
+  <!-- 答题页 -->
+  <div class="card hidden" id="page-quiz">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progress-text"></span>
+        <span id="progress-percent">0%</span>
+      </div>
+      <div class="progress-bar"><div class="fill" id="progress-fill"></div></div>
+    </div>
+    <div class="question-num" id="q-num"></div>
+    <div class="question-text" id="q-text"></div>
+    <div class="options">
+      <div class="option yes" data-val="1"></div>
+      <div class="option no" data-val="0"></div>
+    </div>
+    <div class="quiz-nav">
+      <button class="link-btn" id="btn-prev" disabled>← 上一题</button>
+      <button class="link-btn" id="btn-quit">退出测试</button>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div class="card hidden" id="page-result">
+    <div class="result-code" id="r-codes"></div>
+    <div class="tie-note hidden" id="tie-note"></div>
+    <canvas id="radar" width="600" height="520"></canvas>
+    <div class="score-list" id="score-list"></div>
+    <div id="result-details"></div>
+    <button class="btn secondary" id="btn-restart">重新测试本版本</button>
+    <button class="btn secondary" id="btn-home">返回首页选择其他版本</button>
+  </div>
+
+  <footer class="site">
+    本测试仅供自我探索与职业规划参考，不构成专业职业咨询建议。<br>
+    霍兰德职业兴趣理论源自 John L. Holland 的公开学术理论。
+  </footer>
+</div>
+
+<script>
+/* ================= 六型说明 ================= */
+const TYPES = {
+  R: { name: '现实型（实际型）', eng: 'Realistic', color: '#5a9e6f',
+    desc: '愿意使用工具从事操作性工作，动手能力强，做事手脚灵活、动作协调。偏好于具体任务，不善言辞，做事保守，较为谦虚，通常喜欢独立做事。',
+    careers: '技术性职业（计算机硬件人员、摄影师、制图员、机械装配工），技能性职业（木匠、厨师、技工、修理工、农民等）。' },
+  I: { name: '研究型（调研型）', eng: 'Investigative', color: '#4a6cf7',
+    desc: '思想家而非实干家，抽象思维能力强，求知欲强，肯动脑，善思考。喜欢独立的和富有创造性的工作，考虑问题理性，做事喜欢精确，喜欢逻辑分析和推理，不断探讨未知的领域。',
+    careers: '科学研究人员、教师、工程师、电脑编程人员、医生、系统分析员等。' },
+  A: { name: '艺术型', eng: 'Artistic', color: '#b062d0',
+    desc: '有创造力，乐于创造新颖、与众不同的成果，渴望表现自己的个性，实现自身的价值。做事理想化，追求完美，具有一定的艺术才能和个性，善于表达，不善于事务性工作。',
+    careers: '艺术方面（演员、导演、艺术设计师、雕刻家、建筑师、摄影家、广告制作人），音乐方面（歌唱家、作曲家、乐队指挥），文学方面（小说家、诗人、剧作家）。' },
+  S: { name: '社会型', eng: 'Social', color: '#e2703a',
+    desc: '喜欢与人交往、不断结交新的朋友，善言谈，愿意教导别人。关心社会问题，渴望发挥自己的社会作用，寻求广泛的人际关系，比较看重社会义务和社会道德。',
+    careers: '教育工作者（教师、教育行政人员），社会工作者（咨询人员、公关人员）等提供信息、启迪、帮助、培训、开发或治疗等事务的工作。' },
+  E: { name: '管理型（企业型）', eng: 'Enterprising', color: '#d64f4f',
+    desc: '追求权力、权威和物质财富，具有领导才能。喜欢竞争、敢冒风险、有野心、有抱负。为人务实，习惯以利益得失、权利、地位、金钱等来衡量做事的价值，做事有较强的目的性。',
+    careers: '项目经理、销售人员、营销管理人员、政府官员、企业领导、法官、律师等。' },
+  C: { name: '常规型（传统型）', eng: 'Conventional', color: '#3e9aa8',
+    desc: '尊重权威和规章制度，喜欢按计划办事，细心、有条理，习惯接受他人的指挥和领导。喜欢关注实际和细节情况，通常较为谨慎和保守，不喜欢冒险和竞争。',
+    careers: '秘书、办公室人员、记事员、会计、行政助理、图书馆管理员、出纳员、打字员、投资分析员等。' },
+};
+
+/* ================= 60 题版（SDS） ================= */
+const QUESTIONS_60 = [
+  '我喜欢把一件事情做完后再做另一件事。',
+  '在工作中我喜欢独自筹划，不愿受别人干涉。',
+  '在集体讨论中，我往往保持沉默。',
+  '我喜欢做戏剧、音乐、歌舞、新闻采访等方面的工作。',
+  '每次写信我都一挥而就，不再重复。',
+  '我经常不停地思考某一问题，直到想出正确的答案。',
+  '对别人借我的和我借别人的东西，我都能记得很清楚。',
+  '我喜欢抽象思维的工作，不喜欢动手的工作。',
+  '我喜欢成为人们注意的焦点。',
+  '我喜欢不时地夸耀一下自己取得的好成就。',
+  '我曾经渴望有机会参加探险。',
+  '当我一个独处时，会感到更愉快。',
+  '我喜欢在做事情前，对此事情做出细致的安排。',
+  '我讨厌修理自行车、电器一类的工作。',
+  '我喜欢参加各种各样的聚会。',
+  '我愿意从事虽然工资少、但是比较稳定的职业。',
+  '音乐能使我陶醉。',
+  '我办事很少思前想后。',
+  '我喜欢经常请示上级。',
+  '我喜欢需要运用智力的游戏。',
+  '我很难做那种需要持续集中注意力的工作。',
+  '我喜欢亲自动手制作一些东西，从中得到乐趣。',
+  '我的动手能力很差。',
+  '和不熟悉的人交谈对我来说毫不困难。',
+  '和别人谈判时，我总是很容易放弃自己的观点。',
+  '我很容易结识同性别朋友。',
+  '对于社会问题，我通常持中庸的态度。',
+  '当我开始做一件事情后，即使碰到再多的困难，我也要执著地干下去。',
+  '我是一个沉静而不易动感情的人。',
+  '当我工作时，我喜欢避免干扰。',
+  '我的理想是当一名科学家。',
+  '与言情小说相比，我更喜欢推理小说。',
+  '有些人太霸道，有时明明知道他们是对的，也要和他们对着干。',
+  '我爱幻想。',
+  '我总是主动地向别人提出自己的建议。',
+  '我喜欢使用榔头一类的工具。',
+  '我乐于解除别人的痛苦。',
+  '我更喜欢自己下了赌注的比赛或游戏。',
+  '我喜欢按部就班地完成要做的工作。',
+  '我希望能经常换不同的工作来做。',
+  '我总留有充裕的时间去赴约会。',
+  '我喜欢阅读自然科学方面的书籍和杂志。',
+  '如果掌握一门手艺并能以此为生，我会感到非常满意。',
+  '我曾渴望当一名汽车司机。',
+  '听别人谈“家中被盗”一类的事，很难引起我的同情。',
+  '如果待遇相同，我宁愿当商品推销员，而不愿当图书管理员。',
+  '我讨厌跟各类机械打交道。',
+  '我小时候经常把玩具拆开，把里面看个究竟。',
+  '当接受新任务后，我喜欢以自己的独特方法去完成它。',
+  '我有文艺方面的天赋。',
+  '我喜欢把一切安排得整整齐齐、井井有条。',
+  '我喜欢作一名教师。',
+  '和一群人在一起的时候，我总想不出恰当的话来说。',
+  '看情感影片时，我常禁不住眼圈红润。',
+  '我讨厌学数学。',
+  '在实验室里独自做实验会令我寂寞难耐。',
+  '对于急躁、爱发脾气的人，我仍能以礼相待。',
+  '遇到难解答的问题时，我常常放弃。',
+  '大家公认我是一名勤劳踏实的、愿为大家服务的人。',
+  '我喜欢在人事部门工作。',
+];
+
+/* 60题计分规则（题号为 1 起始）：yes 列答「是」记 1 分，no 列答「否」记 1 分 */
+const SCORING_60 = {
+  C: { yes: [7, 19, 29, 39, 41, 51, 57], no: [5, 18, 40] },
+  R: { yes: [2, 13, 22, 36, 43, 44, 48], no: [14, 23, 47] },
+  I: { yes: [6, 8, 20, 30, 31, 42], no: [21, 55, 56, 58] },
+  E: { yes: [11, 24, 28, 35, 38, 46, 60], no: [3, 16, 25] },
+  S: { yes: [15, 26, 37, 52, 59], no: [1, 12, 27, 45, 53] },
+  A: { yes: [4, 9, 10, 17, 33, 34, 49, 50, 54], no: [32] },
+};
+
+/* ================= 90 题版 ================= */
+const QUESTIONS_90 = [
+  '强壮而敏捷的身体对我很重要。',
+  '我必须彻底地了解事情的真相。',
+  '我的心情受音乐、色彩和美丽事物的影响极大。',
+  '和他人的关系丰富了我的生命并使它有意义。',
+  '我自信会成功。',
+  '我做事必须有清楚的指引。',
+  '我擅长于自己制作、修理东西。',
+  '我可以花很长的时间去想通事情的道理。',
+  '我重视美丽的环境。',
+  '我愿意花时间帮别人解决个人危机。',
+  '我喜欢竞争。',
+  '我在开始一个计划前会花很多时间去计划。',
+  '我喜欢使用双手做事。',
+  '探索新构思使我满意。',
+  '我是寻求新方法来发挥我的创造力。',
+  '我认为能把自己的焦虑和别人分担是很重要的。',
+  '成为群体中的关键任务执行者，对我很重要。',
+  '我对于自己能重视工作中的所有细节感到骄傲。',
+  '我不在乎工作把手弄脏。',
+  '我认为教育是个发展及磨练脑力的终身学习过程。',
+  '我喜欢非正式的穿着，尝试新颜色和款式。',
+  '我常能体会到某人想要和他人沟通的需要。',
+  '我喜欢帮助别人不断改进。',
+  '我在决策时，通常不愿冒险。',
+  '我喜欢购买小零件，做成成品。',
+  '有时我长时间阅读，玩拼图游戏，冥想生命本质。',
+  '我有很强的想象力。',
+  '我喜欢帮助别人发挥天赋和才能。',
+  '我喜欢监督事情直至完工。',
+  '如果我面对一个新情景，会在事前做充分的准备。',
+  '我喜欢独立完成一项任务。',
+  '我渴望阅读或思考任何可以引发我好奇心的东西。',
+  '我喜欢尝试创新的概念。',
+  '如果我和别人摩擦，我会不断尝试化干戈为玉帛。',
+  '要成功就必须定高目标。',
+  '我喜欢为重大决策负责。',
+  '我喜欢直言不讳，不喜欢转弯抹角。',
+  '我在解决问题前，必须把问题进行彻底分析。',
+  '我喜欢重新布置我的环境，使他们与众不同。',
+  '我经常借着和别人交谈来解决自己的问题。',
+  '我常想起草一个计划，而由别人完成细节。',
+  '准时对我来说非常重要。',
+  '从事户外活动令我神清气爽。',
+  '我不断地问：为什么？',
+  '我喜欢自己的工作能够抒发我的情绪和感觉。',
+  '我喜欢帮助别人找可以和他人相互关注的办法。',
+  '能够参与重大决策是件令人兴奋的事情。',
+  '我经常保持清洁，喜欢有条不紊。',
+  '我喜欢周边环境简单而实际。',
+  '我会不断地思索一个问题，直到找出答案为止。',
+  '大自然的美深深地触动我的灵魂。',
+  '亲密的人际关系对我很重要。',
+  '升迁和进步对我极重要。',
+  '当我把每日工作计划好时，我会较有安全感。',
+  '我不害怕过重工作负荷，且知道工作的重点。',
+  '我喜欢能使我思考、给我新观念的书。',
+  '我希望能看到艺术表演、戏剧及好的电影。',
+  '我对别人的情绪低潮相当的敏感。',
+  '能影响别人使我感到兴奋。',
+  '当我答应一件事时，我会竭尽监督所有细节。',
+  '我希望粗重的肢体工作不会伤害任何人。',
+  '我希望能学习所有使我感兴趣的科目。',
+  '我希望能做些与众不同的事。',
+  '我对别人的困难乐于伸出援手。',
+  '我愿意冒一点险以求进步。',
+  '当我遵循成规时，我感到安全。',
+  '我选车时，最先注意的是好的引擎。',
+  '我喜欢能刺激我思考的话。',
+  '当我从事创造性的事时，我会忘掉一切旧经验。',
+  '我对社会上有许多人需要帮助感到关注。',
+  '说服别人依计划行事是件有趣的事情。',
+  '我擅长于检查细节。',
+  '我通常知道如何应付紧急事件。',
+  '阅读新发现的书是件令人兴奋的事情。',
+  '我喜欢美丽、不平凡的东西。',
+  '我经常关心孤独、不友善的人。',
+  '我喜欢讨价还价。',
+  '我花钱时小心翼翼。',
+  '我用运动来保持强壮的身体。',
+  '我经常对大自然的奥秘感到好奇。',
+  '尝试不平凡的新事物是件相当有趣的事情。',
+  '当别人向我诉说他的困难时，我是个好听众。',
+  '做事失败了，我会再接再厉。',
+  '我需要确切地知道别人对我的要求是什么。',
+  '我喜欢把东西拆开，看看能否修理他们。',
+  '我喜欢研读所有的事实，再有逻辑的做出决定。',
+  '没有美丽事物的生活，对我而言是不可思议的。',
+  '人们经常告诉我他们的问题。',
+  '我常能借着资讯网络和别人取得联系。',
+  '小心谨慎的完成一件事是件有成就感的事情。',
+];
+
+/* 90题计分规则：题号 n 归属类型 TYPE_ORDER[(n-1) % 6]，选「符合」记 1 分 */
+const TYPE_ORDER = ['R', 'I', 'A', 'S', 'E', 'C'];
+
+/* ================= 版本配置 ================= */
+const TESTS = {
+  t60: {
+    name: '60 题标准版（SDS）',
+    questions: QUESTIONS_60,
+    optLabels: ['✔ 是', '✘ 否'],
+    maxScore: 10,
+    calc(answers){
+      const s = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      for (const t of Object.keys(SCORING_60)) {
+        SCORING_60[t].yes.forEach(n => { if (answers[n - 1] === 1) s[t]++; });
+        SCORING_60[t].no.forEach(n => { if (answers[n - 1] === 0) s[t]++; });
+      }
+      return s;
+    },
+  },
+  t90: {
+    name: '90 题完整版',
+    questions: QUESTIONS_90,
+    optLabels: ['✔ 符合', '✘ 不符合'],
+    maxScore: 15,
+    calc(answers){
+      const s = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      answers.forEach((a, i) => { if (a === 1) s[TYPE_ORDER[i % 6]]++; });
+      return s;
+    },
+  },
+};
+
+/* ================= 职业匹配对照表 ================= */
+const CAREER_MAP = {
+  RIA: '牙科技术员、陶工、建筑设计员、模型工、细木工、制作链条人员。',
+  RIS: '厨师、林务员、跳水员、潜水员、染色员、电器修理、眼镜制作、电工、纺织机器装配工、服务员、装玻璃工人、发电厂工人、焊接工。',
+  RIE: '建筑和桥梁工程、环境工程、航空工程、公路工程、电力工程、信号工程、电话工程、一般机械工程、自动工程、矿业工程、海洋工程、交通工程技术人员、制图员、家政经济人员、计量员、农民、农场工人、农业机械操作、清洁工、无线电修理、汽车修理、手表修理、管工、线路装配工、工具仓库管理员。',
+  RIC: '船上工作人员、接待员、杂志保管员、牙医助手、制帽工、磨坊工、石匠、机器制造、机车制造、农业机器装配、汽车装配工、缝纫机装配工、钟表装配和检验、电动器具装配、鞋匠、锁匠、货物检验员、电梯机修工、装配工、托儿所所长、钢琴调音员、印刷工、建筑钢铁工作、卡车司机。',
+  RAI: '手工雕刻、玻璃雕刻、制作模型人员、家具木工、制作皮革品、手工绣花、手工钩针纺织、排字工作、印刷工作、图画雕刻、装订工。',
+  RSE: '消防员、交通巡警、警察、门卫、理发师、房间清洁工、屠夫、锻工、开凿工人、管道安装工、出租汽车驾驶员、货物搬运工、送报员、勘探员、娱乐场所的服务员、起卸机操作工、灭害虫者、电梯操作工、厨房助手。',
+  RSI: '纺织工、编织工、农业学校教师、某些职业课程教师（诸如艺术、商业、技术、工艺课程）、雨衣上胶工。',
+  REC: '抄水表员、保姆、实验室动物饲养员、动物管理员。',
+  REI: '轮船船长、航海领航员、大副、试管实验员。',
+  RES: '旅馆服务员、家畜饲养员、渔民、渔网修补工、水手长、收割机操作工、搬运行李工人、公园服务员、救生员、登山导游、火车工程技术员、建筑工作、铺轨工人。',
+  RCI: '测量员、勘测员、仪表操作者、农业工程技术、化学工程技师、民用工程技师、石油工程技师、资料室管理员、探矿工、煅烧工、烧窖工、矿工、炮手、保养工、磨床工、取样工、样品检验员、纺纱工、漂洗工、电焊工、锯木工、刨床工、制帽工、手工缝纫工、油漆工、染色工、按摩工、木匠、农民建筑工作、电影放映员、勘测员助手。',
+  RCS: '公共汽车驾驶员、一等水手、游泳池服务员、裁缝、建筑工作、石匠、烟囱修建工、混凝土工、电话修理工、爆炸手、邮递员、矿工、裱糊工人、纺纱工。',
+  RCE: '打井工、吊车驾驶员、农场工人、邮件分类员、铲车司机、拖拉机司机。',
+  IAS: '普通经济学家、农场经济学家、财政经济学家、国际贸易经济学家、实验心理学家、工程心理学家、心理学家、哲学家、内科医生、数学家。',
+  IAR: '人类学家、天文学家、化学家、物理学家、医学病理、动物标本剥制者、化石修复者、艺术品管理者。',
+  ISE: '营养学家、饮食顾问、火灾检查员、邮政服务检查员。',
+  ISC: '侦察员、电视播音室修理员、电视修理服务员、验尸室人员、编目录者、医学实验技师、调查研究者。',
+  ISR: '水生生物学者、昆虫学者、微生物学家、配镜师、矫正视力者、细菌学家、牙科医生、骨科医生。',
+  ISA: '实验心理学家、普通心理学家、发展心理学家、教育心理学家、社会心理学家、临床心理学家、皮肤病学家、精神病学家、妇产科医师、眼科医生、五官科医生、医学实验室技术专家、民航医务人员、护士。',
+  IES: '细菌学家、生理学家、化学专家、地质专家、地理物理学专家、纺织技术专家、医院药剂师、工业药剂师、药房营业员。',
+  IEC: '档案保管员、保险统计员。',
+  ICR: '质量检验技术员、地质学技师、工程师、法官、图书馆技术辅导员、计算机操作员、医院听诊员、家禽检查员。',
+  IRA: '地理学家、地质学家、声学物理学家、矿物学家、古生物学家、石油学家、地震学家、气象学家、原子和分子物理学家、电学和磁学物理学家、设计审核员、人口统计学家、数学统计学家、外科医生、城市规划家、气象员。',
+  IRS: '流体物理学家、物理海洋学家、等离子体物理学家、农业科学家、动物学家、食品科学家、园艺学家、植物学家、细菌学家、解剖学家、动物病理学家、作物病理学家、药物学家、生物化学家、生物物理学家、细胞生物学家、临床化学家、遗传学家、分子生物学家、质量控制工程师、兽医、放射性治疗技师。',
+  IRE: '化验员、化学工程师、纺织工程师、食品技师、渔业技术专家、材料和测试工程师、电气工程师、土木工程师、航空工程师、行政官员、冶金专家、原子核工程师、陶瓷工程师、地质工程师、电力工程师、口腔科医生、牙科医生。',
+  IRC: '飞机领航员、飞行员、物理实验室技师、文献检查员、农业技术专家、生物技师、动植物技术专家、油管检查员、工商业规划者、矿藏安全检查员、纺织品检验员、照相机修理者、工程技术员、编计算程序者、工具设计者、仪器维修工。',
+  CRI: '簿记员、会计、记时员、铸造机操作工、打字员、按键操作工、复印机操作工。',
+  CRS: '仓库保管员、档案管理员、缝纫工、讲述员、收款人。',
+  CRE: '标价员、实验室工作者、广告管理员、自动打字机操作员、电动机装配工、缝纫机操作工。',
+  CIS: '记账员、顾客服务员、报刊发行员、土地测量员、保险公司职员、会计师、估价员、邮政检查员、外贸检查员。',
+  CIE: '打字员、统计员、支票记录员、订货员、校对员、办公室工作人员。',
+  CIR: '校对员、工程职员、海底电报员、检修计划员、发扳员。',
+  CSE: '接待员、通讯员、电话接线员、卖票员、旅馆服务员、私人职员、商学教师、旅游办事员。',
+  CSR: '运货代理商、铁路职员、交通检查员、办公室通信员、簿记员、出纳员、银行财务职员。',
+  CSA: '秘书、图书管理员、办公室办事员。',
+  CER: '邮递员、数据处理员、办公室办事员。',
+  CEI: '推销员、经济分析家。',
+  CES: '银行会计、记账员、法人秘书、速记员、法院报告人。',
+  ECI: '银行行长、审计员、信用管理员、地产管理员、商业管理员。',
+  ECS: '信用办事员、保险人员、各类进货员、海关服务经理、售货员、购买员、会计。',
+  ERI: '建筑物管理员、工业工程师、护士长、农场管理员、农业经营管理人员。',
+  ERS: '仓库管理员、房屋管理员、货栈监督管理员。',
+  ERC: '邮政局长、渔船船长、机械操作领班、木工领班、瓦工领班、驾驶员领班。',
+  EIR: '科学、技术和有关周期出版物的管理员。',
+  EIC: '专利代理人、鉴定人、运输服务检查员、安全检查员、废品收购人员。',
+  EIS: '警官、侦察员、交通检验员、安全咨询员、合同管理者、商人。',
+  EAS: '法官、律师、公证人。',
+  EAR: '展览室管理员、舞台管理员、播音员、训兽员。',
+  ESC: '理发师、裁判员、政府行政管理员、财政管理员、工程管理员、售货员、职业病防治、商业经理、办公室主任、人事负责人、调度员。',
+  ESR: '家具售货员、书店售货员、公共汽车的驾驶员、日用品售货员、护士长、自然科学和工程的行政领导。',
+  ESI: '博物馆管理员、图书馆管理员、古迹管理员、饮食业经理、地区安全服务管理员、技术服务咨询者、超级市场管理员、零售商品店店员、批发商、出租汽车服务站调度。',
+  ESA: '博物馆馆长、报刊管理员、音乐器材售货员、广告商售画营业员、导游、轮船或班机上的事务长、飞机上的服务员、船员、法官、律师。',
+  ASE: '戏剧导演、舞蹈教师、广告撰稿人、报刊专栏作者、记者、演员、英语翻译。',
+  ASI: '音乐教师、乐器教师、美术教师、管弦乐指挥、合唱队指挥、歌星、演奏家、哲学家、作家、广告经理、时装模特。',
+  AER: '新闻摄影师、电视摄影师、艺术指导、录音指导、丑角演员、魔术师、木偶戏演员、骑士、跳水员。',
+  AEI: '音乐指挥、舞台指导、电影导演。',
+  AES: '流行歌手、舞蹈演员、电影导演、广播节目主持人、舞蹈教师、口技表演者、喜剧演员、模特。',
+  AIS: '画家、剧作家、编辑、评论家、时装艺术大师、新闻摄影师、男演员、文学作者。',
+  AIE: '花匠、皮衣设计师、工业产品设计师、剪影艺术家、复制雕刻品大师。',
+  AIR: '建筑师、画家、摄影师、绘图员、雕刻家、环境美化工、包装设计师、绣花工、陶器设计师、漫画工。',
+  SEC: '社会活动家、退伍军人服务官员、工商会事务代表、教育咨询者、宿舍管理员、旅馆经理、饮食服务管理员。',
+  SER: '体育教练、游泳指导。',
+  SEI: '大学校长、学院院长、医院行政管理员、历史学家、家政经济学家、职业学校教师、资料员。',
+  SEA: '娱乐活动管理员、国外服务办事员、社会服务助理、一般咨询者、宗教教育工作者。',
+  SCE: '部长助理、福利机构职员、生产协调人、环境卫生管理人员、戏院经理、餐馆经理、售票员。',
+  SRI: '外科医师助手、医院服务员。',
+  SRE: '体育教师、职业病治疗者、体育教练、专业运动员、房管员、儿童家庭教师、警察、引座员、传达员、保姆。',
+  SRC: '护理员、护理助理、医院勤杂工、理发师、学校儿童服务人员。',
+  SIA: '社会学家、心理咨询者、学校心理学家、政治科学家、大学或学院的系主任、大学或学院的教育学教师、大学农业教师、大学法律教师、大学工程和建筑课程的教师、大学数学、医学、物理教师、大学社会科学、生命科学教师、研究生助教、成人教育教师。',
+  SIE: '营养学家、饮食学家、海关检查员、安全检查员、税务稽查员、校长。',
+  SIC: '描图员、兽医助手、诊所助理、体检检查员、娱乐指导者、监督缓刑犯的工作者、咨询人员、社会科学教师。',
+  SIR: '理疗员、救护队工作人员、手足病医生、职业病治疗助手。',
+};
+
+/* 补充组合（原对照表未收录的 48 种，按三个构成类型的特征推导，仅供参考） */
+const CAREER_MAP_EXT = {
+  RAS: '农业技术指导、园艺师、农机维修服务、园林绿化、宠物美容师、户外运动教练。',
+  RAE: '工艺品制作与销售、会展搭建、舞台美术技术、广告制作、摄影工作室经营。',
+  RAC: '技术制图员、工艺品质检、印刷制版、档案修复、设备记录管理。',
+  RSC: '体育器材管理、健身房管理、康复器材维护、仓储设备管理、票务安检。',
+  RSA: '体育教师、健身教练、拓展训练师、游泳教练、武术教练。',
+  REA: '农机经营、花艺经营、景观工程管理、宠物店经营、户外用品销售。',
+  RCA: '文物修复、档案技术管理、图书装订、标本制作、工艺品档案管理。',
+  IAC: '艺术史研究、文献研究、博物馆研究、档案研究、编辑校对。',
+  IAE: '科技记者、科普作家、技术咨询顾问、科研项目管理、知识产权代理。',
+  IEA: '科学编辑、科普策划、展览策划、教育产品开发、科技媒体主编。',
+  IER: '工程技术管理、研发项目主管、实验室主管、技术销售工程师、生产技术分析。',
+  ICE: '数据管理、信息分析、市场研究分析、保险精算助理、统计调查。',
+  ICA: '艺术数据分析、文献信息管理、数字档案馆、音乐理论研究、艺术品鉴定助理。',
+  ICS: '社会调查研究员、市场调研分析师、民意调查员、数据统计文员、信息咨询。',
+  AIC: '艺术编辑、出版美术编辑、展览文献整理、艺术品编目、文化档案管理。',
+  ASR: '舞蹈教师、体育舞蹈教练、形体训练师、儿童艺术启蒙教师、康复舞蹈指导。',
+  ASC: '艺术教育行政、文化馆干事、剧院行政、艺术培训教务、群众文化辅导员。',
+  AEC: '广告制作管理、影视制片管理、演出经纪助理、文化项目执行、出版发行。',
+  ARE: '工艺产品设计、手工艺品经营、美术用品销售、花艺设计经营、装饰工程。',
+  ARI: '工艺美术师、珠宝设计师、产品设计师、文物修复师、艺术治疗师。',
+  ARS: '美术教师、手工艺教师、花艺师、化妆师、陶艺师、儿童美术教育、舞蹈教师、摄影师。',
+  ARC: '工艺品制作、印刷美术制版、陈列设计、橱窗设计、模型制作。',
+  ACI: '美术编辑、艺术资料管理、博物馆教育、文化出版、艺术品档案管理。',
+  ACE: '文化艺术管理、演出策划、广告客户经理、文化传媒运营、艺术培训管理。',
+  ACR: '装饰美工、展览搭建、舞台布景、道具制作、工艺模型制作。',
+  ACS: '文化服务、旅游演艺、礼仪策划、婚庆策划、群众文化活动组织。',
+  SCI: '教务管理、学籍管理、教育统计、培训行政、人力资源文员。',
+  SCR: '总务后勤管理、宿舍管理、食堂管理、物业管理、设备调度。',
+  SCA: '幼儿保育、文化活动组织、社区文体干事、图书借阅服务、礼仪服务。',
+  SRA: '康复治疗师、体育保健师、按摩理疗师、老年照护、特殊儿童康复。',
+  SAE: '教育培训管理、学校管理、人力资源经理、客户关系管理、培训师。',
+  SAC: '学前教育行政、社会福利行政、心理咨询助理、社区服务管理、慈善机构干事。',
+  SAI: '艺术治疗师、音乐教师、特殊教育教师、心理咨询师、教育咨询师。',
+  SAR: '手语翻译、康复技师、特殊教育教师、体育康复指导、职业培训师。',
+  ECR: '仓储物流管理、车队调度、生产设备管理、物资采购、供应链管理。',
+  ECA: '文化经纪、艺术市场推广、演出经纪、文创产品运营、画廊经营。',
+  ERA: '农场经营、园林工程承包、体育俱乐部管理、户外拓展公司、渔场管理。',
+  EIA: '科技创业、技术转让中介、科研管理、创新项目主管、产品经理。',
+  EAC: '文化企业管理、出版发行管理、影视制片、广告经营管理、会展管理。',
+  EAI: '文化创意策划、品牌策划、咨询顾问、媒体策划、艺术经纪人。',
+  CRA: '设备档案管理、仓储账目管理、固定资产管理、工具资料管理、车辆档案管理。',
+  CIA: '编辑校对、出版发行文员、学术资料管理、病历档案管理、翻译文员。',
+  CSI: '人事档案管理、薪酬文员、社保专员、客户服务记录、教务文员。',
+  CEA: '商务文秘、会展文员、广告行政、演出票务、文化公司行政。',
+  CAI: '美术馆行政、剧院票务管理、艺术机构文秘、出版社会计、文化统计。',
+  CAE: '文化企业会计、演出财务管理、广告公司会计、文创公司行政。',
+  CAR: '舞台技术管理、道具管理、摄影器材管理、印刷管理、展览物流。',
+  CAS: '幼儿园后勤、培训机构前台、文化馆服务、票务服务、社区文员。',
+};
+
+/* ================= 状态与逻辑 ================= */
+let currentTest = null;
+let idx = 0;
+let answers = [];
+
+const $ = id => document.getElementById(id);
+
+function showPage(id){
+  ['page-home', 'page-quiz', 'page-result'].forEach(p => $(p).classList.add('hidden'));
+  $(id).classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startTest(key){
+  currentTest = TESTS[key];
+  idx = 0;
+  answers = new Array(currentTest.questions.length).fill(null);
+  document.querySelector('.option.yes').innerHTML = currentTest.optLabels[0];
+  document.querySelector('.option.no').innerHTML = currentTest.optLabels[1];
+  showPage('page-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const total = currentTest.questions.length;
+  $('q-num').textContent = currentTest.name + ' · 题目 ' + (idx + 1);
+  $('q-text').textContent = (idx + 1) + '、' + currentTest.questions[idx];
+  $('progress-text').textContent = '第 ' + (idx + 1) + ' / ' + total + ' 题';
+  const pct = Math.round(idx / total * 100);
+  $('progress-percent').textContent = pct + '%';
+  $('progress-fill').style.width = pct + '%';
+  $('btn-prev').disabled = idx === 0;
+}
+
+document.querySelectorAll('.version-card').forEach(el => {
+  el.addEventListener('click', () => startTest(el.dataset.test));
+});
+
+$('btn-restart').addEventListener('click', () => {
+  idx = 0; answers.fill(null);
+  showPage('page-quiz'); renderQuestion();
+});
+$('btn-home').addEventListener('click', () => showPage('page-home'));
+$('btn-quit').addEventListener('click', () => {
+  if (confirm('确定退出本次测试吗？已作答的内容不会被保存。')) showPage('page-home');
+});
+$('btn-prev').addEventListener('click', () => {
+  if (idx > 0) { idx--; renderQuestion(); }
+});
+
+document.querySelectorAll('.option').forEach(el => {
+  el.addEventListener('click', () => {
+    answers[idx] = Number(el.dataset.val);
+    if (idx < currentTest.questions.length - 1) {
+      idx++;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  });
+});
+
+/* ================= 计分与结果 ================= */
+/* 取前三位代码；同分按多种类型处理（生成所有符合分数排序的排列，最多展示6个） */
+function getCodes(scores){
+  const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const thirdScore = entries[2][1];
+  const candidates = entries.filter(e => e[1] >= thirdScore).map(e => e[0]);
+  const codes = [];
+  const permute = (arr, prefix) => {
+    if (prefix.length === 3) { codes.push(prefix.join('')); return; }
+    for (let i = 0; i < arr.length; i++) {
+      const rest = arr.slice(0, i).concat(arr.slice(i + 1));
+      permute(rest, prefix.concat(arr[i]));
+    }
+  };
+  permute(candidates, []);
+  // 仅保留分数不递减的排列（无同分时只剩唯一正确排序；有同分时保留全部组合）
+  const valid = codes.filter(c =>
+    scores[c[0]] >= scores[c[1]] && scores[c[1]] >= scores[c[2]]);
+  return [...new Set(valid)].slice(0, 6);
+}
+
+function showResult(){
+  const scores = currentTest.calc(answers);
+  const maxScore = currentTest.maxScore;
+  const sorted = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
+  const codes = getCodes(scores);
+
+  $('r-codes').innerHTML =
+    codes.map(c => `<div class="code-badge">${c}</div>`).join('') +
+    '<p>你的霍兰德职业兴趣类型代码（' + currentTest.name + '）</p>';
+  if (codes.length > 1) {
+    $('tie-note').textContent = '你的得分存在同分项，按多种类型组合处理，以上代码均可参考。';
+    $('tie-note').classList.remove('hidden');
+  } else {
+    $('tie-note').classList.add('hidden');
+  }
+
+  // 分数条
+  $('score-list').innerHTML = sorted.map(t => `
+    <div class="score-row">
+      <div class="label"><span><b>${t}</b> ${TYPES[t].name}</span><span>${scores[t]} / ${maxScore} 分</span></div>
+      <div class="bar"><div class="fill" style="width:${scores[t] / maxScore * 100}%;background:${TYPES[t].color}"></div></div>
+    </div>`).join('');
+
+  // 雷达图
+  drawRadar(scores, maxScore);
+
+  // 主导类型解读
+  let html = '<div class="result-section"><h3>主导类型解读</h3>';
+  sorted.slice(0, 3).forEach((t, i) => {
+    html += `<p style="margin-bottom:10px"><b style="color:${TYPES[t].color}">${i + 1}. ${TYPES[t].name}</b>：${TYPES[t].desc}</p>`;
+  });
+  html += '</div>';
+
+  // 职业匹配
+  html += '<div class="result-section"><h3>职业匹配参考</h3>';
+  let matched = 0;
+  codes.forEach(c => {
+    if (CAREER_MAP[c]) {
+      matched++;
+      html += `<div class="code-block"><h4>代码 ${c} 适合的职业：</h4><div class="career-tags">` +
+        CAREER_MAP[c].replace(/。$/, '').split('、').map(x => `<span class="career-tag">${x}</span>`).join('') +
+        '</div></div>';
+    } else if (CAREER_MAP_EXT[c]) {
+      matched++;
+      html += `<div class="code-block"><h4>代码 ${c} 适合的职业<span style="font-size:12px;color:#b7791f;font-weight:normal">（补充参考，非原对照表内容）</span>：</h4><div class="career-tags">` +
+        CAREER_MAP_EXT[c].replace(/。$/, '').split('、').map(x => `<span class="career-tag">${x}</span>`).join('') +
+        '</div></div>';
+    }
+  });
+  if (matched === 0) {
+    const top = sorted[0];
+    html += `<p>你的代码 ${codes.join(' / ')} 属于非典型兴趣类型，对照表中没有直接推荐，可参考最高得分项 <b>${top} ${TYPES[top].name}</b> 开头的职业方向：${TYPES[top].careers}</p>`;
+  } else {
+    html += '<p style="margin-top:6px">说明：对照表共收录全部 120 种三位代码组合，其中标注「补充参考」的组合为按类型特征推导的扩展内容，仅供参考。</p>';
+  }
+  html += '</div>';
+
+  html += '<div class="result-section"><h3>温馨提示</h3><p>职业兴趣只是职业选择的参考维度之一，实际选择还需结合个人能力、价值观与社会需求综合判断。如果想让结果更清晰、更准确，可以尝试题目更多的版本进行验证。</p></div>';
+
+  $('result-details').innerHTML = html;
+  showPage('page-result');
+}
+
+function drawRadar(scores, maxScore){
+  const canvas = $('radar');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2 + 10, R = Math.min(W, H) / 2 - 90;
+  const keys = ['R', 'I', 'A', 'S', 'E', 'C'];
+  ctx.clearRect(0, 0, W, H);
+
+  const pt = (i, r) => {
+    const ang = -Math.PI / 2 + i * Math.PI * 2 / 6;
+    return [cx + Math.cos(ang) * r, cy + Math.sin(ang) * r];
+  };
+
+  for (let ring = 1; ring <= 5; ring++) {
+    ctx.beginPath();
+    for (let i = 0; i <= 6; i++) {
+      const [x, y] = pt(i % 6, R * ring / 5);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  for (let i = 0; i < 6; i++) {
+    const [x, y] = pt(i, R);
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, y);
+    ctx.strokeStyle = '#edf0f7'; ctx.stroke();
+  }
+  ctx.beginPath();
+  keys.forEach((k, i) => {
+    const [x, y] = pt(i, R * scores[k] / maxScore);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(74,108,247,0.18)';
+  ctx.fill();
+  ctx.strokeStyle = '#4a6cf7';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  keys.forEach((k, i) => {
+    const [x, y] = pt(i, R * scores[k] / maxScore);
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = TYPES[k].color; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+    const [lx, ly] = pt(i, R + 42);
+    ctx.font = 'bold 22px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#2d3748';
+    ctx.fillText(k + ' ' + TYPES[k].name.replace(/（.*）/, ''), lx, ly);
+    ctx.font = '18px sans-serif';
+    ctx.fillStyle = '#718096';
+    ctx.fillText(scores[k] + '分', lx, ly + 26);
+  });
+}
+</script>
+
+<!-- 返回首页按钮（非正式职场对谈测评站） -->
+<a id="back-home-btn" href="/" style="position:fixed;top:14px;left:14px;z-index:99999;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:rgba(31,78,121,0.92);color:#fff;text-decoration:none;font-size:14px;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,0.25);line-height:1;">&#8592; 返回首页</a>
+</body>
+</html>
