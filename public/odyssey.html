@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>奥德赛计划 · 设计你的三种人生</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #F4F7F4;
+    color: #2C3E35;
+    line-height: 1.8;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 32px 18px 80px; }
+  .hero {
+    background: linear-gradient(135deg, #2E7D5B 0%, #1F5C42 100%);
+    color: #fff; border-radius: 18px; padding: 34px 26px; text-align: center;
+    box-shadow: 0 6px 24px rgba(46,125,91,0.25);
+  }
+  .hero h1 { font-size: 26px; margin-bottom: 10px; letter-spacing: 1px; }
+  .hero p { font-size: 14px; opacity: 0.92; }
+  .src { font-size: 12px; opacity: 0.75; margin-top: 10px; }
+  .intro {
+    background: #fff; border-radius: 14px; padding: 20px 22px; margin-top: 18px;
+    font-size: 14px; color: #555; box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .intro b { color: #2E7D5B; }
+  .plan {
+    background: #fff; border-radius: 16px; padding: 24px 22px; margin-top: 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); border-top: 5px solid #2E7D5B;
+  }
+  .plan.p2 { border-top-color: #C0762C; }
+  .plan.p3 { border-top-color: #4A6FA5; }
+  .plan h2 { font-size: 19px; margin-bottom: 4px; }
+  .plan .sub { font-size: 12.5px; color: #999; margin-bottom: 16px; }
+  label { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 6px; color: #37474F; }
+  label small { font-weight: 400; color: #999; }
+  input[type=text], textarea {
+    width: 100%; border: 1.5px solid #E0E6E0; border-radius: 10px; padding: 10px 12px;
+    font-size: 14px; font-family: inherit; background: #FBFDFB; color: #333;
+    transition: border-color .2s;
+  }
+  input[type=text]:focus, textarea:focus { outline: none; border-color: #2E7D5B; background: #fff; }
+  textarea { min-height: 96px; resize: vertical; line-height: 1.7; }
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+  .slider-row input[type=range] { flex: 1; accent-color: #2E7D5B; }
+  .slider-val { font-size: 13px; color: #2E7D5B; font-weight: 700; width: 48px; text-align: right; }
+  .analyze-btn {
+    display: block; width: 100%; margin-top: 30px; padding: 16px; border: none; border-radius: 14px;
+    background: linear-gradient(135deg, #2E7D5B, #1F5C42); color: #fff; font-size: 17px; font-weight: 700;
+    cursor: pointer; letter-spacing: 2px; box-shadow: 0 6px 18px rgba(46,125,91,0.3);
+    transition: transform .15s;
+  }
+  .analyze-btn:hover { transform: translateY(-2px); }
+  .analyze-btn:disabled { opacity: .6; cursor: wait; }
+  #result {
+    display: none; background: #fff; border-radius: 16px; padding: 26px 24px; margin-top: 26px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.07); border-left: 5px solid #2E7D5B;
+  }
+  #result h3 { color: #1F5C42; font-size: 18px; margin-bottom: 14px; }
+  #result .kv { background: #F2F8F4; border-radius: 10px; padding: 14px 16px; margin: 12px 0; font-size: 14px; }
+  #result .kv b { color: #2E7D5B; }
+  #result ul { margin: 8px 0 8px 20px; font-size: 14px; }
+  #result li { margin: 6px 0; }
+  #result .foot { font-size: 12px; color: #AAA; margin-top: 18px; }
+  .copy-btn {
+    margin-top: 16px; padding: 10px 22px; border: 1.5px solid #2E7D5B; background: #fff; color: #2E7D5B;
+    border-radius: 10px; font-size: 14px; cursor: pointer;
+  }
+  #back-home-btn {
+    position: fixed; left: 14px; top: 14px; z-index: 99;
+    background: rgba(255,255,255,0.95); color: #2E7D5B; border: 1.5px solid #2E7D5B;
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600;
+    text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  }
+  .toast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; padding: 10px 22px; border-radius: 999px; font-size: 14px;
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+</style>
+</head>
+<body>
+<a id="back-home-btn" href="/">← 返回首页</a>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>奥德赛计划</h1>
+    <p>写下三个版本的五年人生，看看它们共同指向哪里</p>
+    <div class="src">源自《斯坦福大学人生设计课》（Designing Your Life）</div>
+  </div>
+
+  <div class="intro">
+    不要只给自己一条路。请大胆写下 <b>三个不同版本</b> 的五年计划：它们都值得被认真设计。
+    填完后点击底部按钮，AI 会帮你提炼 <b>三个计划的共同点</b>——那往往就是你内心真正在乎的东西。
+  </div>
+
+  <div class="plan p1">
+    <h2>计划一 · 现在的延伸</h2>
+    <div class="sub">沿着当前的路继续走，五年后理想中的一天是什么样的？</div>
+    <label>给这个计划起个名字</label>
+    <input type="text" id="t1-title" placeholder="例如：深耕本行，成为专家">
+    <label>五年后的一个典型一天 <small>（越具体越好：在哪、做什么、和谁在一起）</small></label>
+    <textarea id="t1-desc" placeholder="例如：早上九点，我在自己的工作室里……"></textarea>
+    <label>这个计划需要什么资源 <small>（时间 / 技能 / 人脉 / 金钱）</small></label>
+    <textarea id="t1-res" placeholder="例如：需要考一个证书、攒一笔启动资金……"></textarea>
+    <label>你对它的投入意愿</label>
+    <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t1-score"><span class="slider-val" id="t1-val">3 分</span></div>
+  </div>
+
+  <div class="plan p2">
+    <h2>计划二 · 假如现在不能做</h2>
+    <div class="sub">如果现在的工作/行业突然消失了，你会选择做什么？</div>
+    <label>给这个计划起个名字</label>
+    <input type="text" id="t2-title" placeholder="例如：转行做心理咨询">
+    <label>五年后的一个典型一天</label>
+    <textarea id="t2-desc" placeholder="例如：我在一家社区机构做咨询师……"></textarea>
+    <label>这个计划需要什么资源</label>
+    <textarea id="t2-res" placeholder="例如：需要系统学习心理学、积累个案时长……"></textarea>
+    <label>你对它的投入意愿</label>
+    <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t2-score"><span class="slider-val" id="t2-val">3 分</span></div>
+  </div>
+
+  <div class="plan p3">
+    <h2>计划三 · 抛开钱和面子</h2>
+    <div class="sub">如果不考虑收入和别人的眼光，你纯粹想做什么？</div>
+    <label>给这个计划起个名字</label>
+    <input type="text" id="t3-title" placeholder="例如：开一间小书店">
+    <label>五年后的一个典型一天</label>
+    <textarea id="t3-desc" placeholder="例如：我在海边的小镇经营一家书店……"></textarea>
+    <label>这个计划需要什么资源</label>
+    <textarea id="t3-res" placeholder="例如：需要先存够一年生活费……"></textarea>
+    <label>你对它的投入意愿</label>
+    <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t3-score"><span class="slider-val" id="t3-val">3 分</span></div>
+  </div>
+
+  <button class="analyze-btn" id="go" onclick="analyze()">✨ 生成我的共同点分析</button>
+
+  <div id="result">
+    <h3>🌱 你的三个计划，共同指向这里</h3>
+    <div id="result-body"></div>
+    <button class="copy-btn" onclick="copyResult()">复制结果</button>
+    <div class="foot">本分析由本地智能算法生成，仅供参考。真正的答案，一直在你心里。</div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// 滑块显示
+[1,2,3].forEach(i => {
+  const s = document.getElementById('t'+i+'-score');
+  s.addEventListener('input', () => document.getElementById('t'+i+'-val').textContent = s.value + ' 分');
+});
+
+const STOP = ['我们','自己','工作','生活','可以','希望','一个','计划','因为','所以','如果','通过','就是','觉得','需要','进行','相关','以及','对于','并且','而且','可能','能够','不会','没有','什么','怎么','这个','那个','这样','那样','现在','未来','五年','之后','然后','但是','时候','方面','一些','一种','还有','已经','正在','让我','我会','我要','我想','成为','拥有','实现','每天','一年','比如','同时','其中','随着','不断','更加','非常','还是','或者','不过','关于','目前','未来','规划','发展'];
+
+function analyze() {
+  const plans = [1,2,3].map(i => ({
+    title: document.getElementById('t'+i+'-title').value.trim() || ('计划' + '一二三'[i-1]),
+    desc: document.getElementById('t'+i+'-desc').value.trim(),
+    res: document.getElementById('t'+i+'-res').value.trim(),
+    score: +document.getElementById('t'+i+'-score').value
+  }));
+
+  for (const p of plans) {
+    if ((p.desc + p.res).length < 20) {
+      toast('「' + p.title + '」写得太少啦，再多描述一点（20字以上）');
+      return;
+    }
+  }
+
+  const btn = document.getElementById('go');
+  btn.disabled = true; btn.textContent = '分析中…';
+
+  setTimeout(() => {
+    const html = buildAnalysis(plans);
+    document.getElementById('result-body').innerHTML = html;
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({behavior:'smooth'});
+    btn.disabled = false; btn.textContent = '✨ 生成我的共同点分析';
+  }, 900);
+}
+
+function buildAnalysis(plans) {
+  // 提取共同关键词：长度2~5的子串，在≥2个计划中出现
+  const texts = plans.map(p => p.desc + '。' + p.res);
+  const freq = {};
+  for (const t of texts) {
+    const seen = new Set();
+    for (let len = 5; len >= 2; len--) {
+      for (let i = 0; i + len <= t.length; i++) {
+        const s = t.substr(i, len);
+        if (/^[一-龥]+$/.test(s)) seen.add(s);
+      }
+    }
+    for (const s of seen) freq[s] = (freq[s] || 0) + 1;
+  }
+  const cands = Object.entries(freq)
+    .filter(([w, c]) => c >= 2 && !STOP.some(st => w.includes(st)))
+    .map(([w, c]) => ({w, c, s: c * w.length * w.length}))
+    .sort((a, b) => b.s - a.s);
+
+  // 贪心选取不重叠的高分词
+  const picked = [];
+  for (const cand of cands) {
+    if (picked.length >= 5) break;
+    if (picked.some(p => cand.w.includes(p.w) || p.w.includes(cand.w))) continue;
+    picked.push(cand);
+  }
+
+  let html = '';
+  if (picked.length) {
+    html += '<div class="kv"><b>🔍 共同关键词：</b>' +
+      picked.map(p => '「' + p.w + '」（出现在 ' + p.c + ' 个计划中）').join('、') + '</div>';
+  }
+
+  // 资源重叠
+  const resWords = ['学习','证书','存款','资金','人脉','经验','课程','练习','作品集','客户'];
+  const hitRes = resWords.filter(w => texts.filter(t => t.includes(w)).length >= 2);
+  if (hitRes.length) {
+    html += '<div class="kv"><b>🧰 共同需要的资源：</b>' + hitRes.map(w => '「' + w + '」').join('、') +
+      '<br><span style="color:#888;font-size:13px">这些不是巧合——它们可能就是你接下来一年真正该攒的东西。</span></div>';
+  }
+
+  // 共同点总结
+  const inAll = picked.filter(p => p.c === 3).map(p => p.w);
+  const inTwo = picked.filter(p => p.c === 2).map(p => p.w);
+  html += '<div class="kv"><b>💡 AI 解读：</b><br>';
+  if (inAll.length) {
+    html += '三个计划都围绕「' + inAll.slice(0,3).join('」「') + '」展开——不管走哪条路，<b>它们都是你放不下的东西</b>，大概率就是你的核心价值取向。';
+  } else if (inTwo.length) {
+    html += '你的计划看似不同，但都反复出现「' + inTwo.slice(0,3).join('」「') + '」。<b>这些重复出现的元素，就是你内心真正在意的方向。</b>';
+  } else {
+    html += '三个计划的写法差异较大——这很好，说明你真的在认真探索。建议回看每个计划里<b>让你写的时候最兴奋的部分</b>，兴奋感不会骗人。';
+  }
+  html += '</div>';
+
+  // 分数最高的计划 + 最小下一步
+  const best = plans.slice().sort((a,b) => b.score - a.score)[0];
+  html += '<div class="kv"><b>🚀 最简单的开始：</b>三个计划中，「' + best.title + '」是你投入意愿最高的（' +
+    best.score + ' 分）。不要等准备好再开始，本周就做一个 2 小时能完成的小动作——查一个资料、约一个人聊、写一页草稿。<br>' +
+    '<span style="color:#888;font-size:13px">奥德赛计划的精髓：不是选对一条路，而是让三条路都活起来。</span></div>';
+
+  return html;
+}
+
+function copyResult() {
+  const text = document.getElementById('result').innerText;
+  navigator.clipboard.writeText(text).then(() => toast('已复制，可以粘贴保存'), () => toast('复制失败，请手动选择复制'));
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = 1;
+  setTimeout(() => t.style.opacity = 0, 2200);
+}
+</script>
+</body>
+</html>
