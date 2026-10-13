@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>说出你的职业困惑 · 非正式职场对谈</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: #F4F7F4; color: #2C3E35; line-height: 1.8;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 32px 18px 80px; }
+  .hero {
+    background: linear-gradient(135deg, #2E7D5B 0%, #1F5C42 100%);
+    color: #fff; border-radius: 18px; padding: 34px 26px; text-align: center;
+    box-shadow: 0 6px 24px rgba(46,125,91,0.25);
+  }
+  .hero h1 { font-size: 25px; margin-bottom: 10px; letter-spacing: 1px; }
+  .hero p { font-size: 14px; opacity: 0.92; }
+  .guide {
+    background: #FFF8F0; border: 1px solid #F0D9B8; border-radius: 14px;
+    padding: 18px 20px; margin-top: 18px; font-size: 14px; color: #7A5C2E;
+  }
+  .guide b { color: #B0782E; }
+  .card {
+    background: #fff; border-radius: 16px; padding: 24px 22px; margin-top: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .card h2 { font-size: 18px; color: #1F5C42; margin-bottom: 14px; }
+  label { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 6px; color: #37474F; }
+  label small { font-weight: 400; color: #999; }
+  input[type=text], select, textarea {
+    width: 100%; border: 1.5px solid #E0E6E0; border-radius: 10px; padding: 10px 12px;
+    font-size: 14px; font-family: inherit; background: #FBFDFB; color: #333;
+    transition: border-color .2s;
+  }
+  input[type=text]:focus, select:focus, textarea:focus { outline: none; border-color: #2E7D5B; background: #fff; }
+  textarea { min-height: 130px; resize: vertical; line-height: 1.7; }
+  .two-col { display: flex; gap: 12px; flex-wrap: wrap; }
+  .two-col > div { flex: 1; min-width: 150px; }
+  .status-row { display: flex; gap: 10px; }
+  .status-btn {
+    flex: 1; padding: 13px; border: 1.5px solid #D8E2D8; border-radius: 12px; background: #FBFDFB;
+    font-size: 15px; font-weight: 600; color: #666; cursor: pointer; text-align: center;
+    transition: all .15s;
+  }
+  .status-btn.on { border-color: #2E7D5B; background: #EAF4EE; color: #1F5C42; }
+  .seg { display: none; }
+  .seg.show { display: block; }
+  .hint { font-size: 12.5px; color: #999; margin-top: 4px; }
+  .gen-btn {
+    display: block; width: 100%; margin-top: 28px; padding: 16px; border: none; border-radius: 14px;
+    background: linear-gradient(135deg, #2E7D5B, #1F5C42); color: #fff; font-size: 17px; font-weight: 700;
+    cursor: pointer; letter-spacing: 2px; box-shadow: 0 6px 18px rgba(46,125,91,0.3); transition: transform .15s;
+  }
+  .gen-btn:hover { transform: translateY(-2px); }
+  #result {
+    display: none; background: #fff; border-radius: 16px; padding: 26px 24px; margin-top: 26px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.07); border-left: 5px solid #2E7D5B;
+  }
+  #result h3 { color: #1F5C42; font-size: 18px; margin-bottom: 10px; }
+  #msg-box {
+    background: #F5F9F6; border-radius: 10px; padding: 16px; font-size: 14px; white-space: pre-wrap;
+    word-break: break-word; color: #333; margin-top: 10px; line-height: 1.9;
+  }
+  .next { font-size: 13.5px; color: #666; margin-top: 14px; }
+  .next b { color: #2E7D5B; }
+  .copy-btn {
+    margin-top: 16px; padding: 10px 22px; border: 1.5px solid #2E7D5B; background: #fff; color: #2E7D5B;
+    border-radius: 10px; font-size: 14px; cursor: pointer;
+  }
+  #back-home-btn {
+    position: fixed; left: 14px; top: 14px; z-index: 99;
+    background: rgba(255,255,255,0.95); color: #2E7D5B; border: 1.5px solid #2E7D5B;
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600;
+    text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  }
+  .toast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; padding: 10px 22px; border-radius: 999px; font-size: 14px;
+    opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 100;
+  }
+</style>
+</head>
+<body>
+<a id="back-home-btn" href="/">← 返回首页</a>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>说出你的职业困惑</h1>
+    <p>填完这份小问卷，生成一段留言，发到公众号后台</p>
+  </div>
+
+  <div class="guide">
+    <b>📮 为什么需要这些信息？</b><br>
+    后台经常收到"我不开心""该怎么办"这类留言，不是不想回，是信息太少，实在无从答起。
+    你的情况写得越具体，我们能给出的建议就越有针对性。以下信息仅用于回复你的问题，不会公开。
+  </div>
+
+  <div class="card">
+    <h2>第一步 · 你现在的状态</h2>
+    <label>你目前是？</label>
+    <div class="status-row">
+      <div class="status-btn on" id="btn-work" onclick="setStatus('work')">💼 在职</div>
+      <div class="status-btn" id="btn-free" onclick="setStatus('free')">🌱 无业 / 待业</div>
+    </div>
+
+    <!-- 在职版 -->
+    <div class="seg show" id="seg-work">
+      <label>行业 <small>（例如：互联网 / 快消 / 制造业 / 教育……）</small></label>
+      <input type="text" id="w-industry" placeholder="你所在的行业">
+      <label>职能 / 岗位 <small>（例如：产品经理 / 财务 / 销售 / 人力资源……）</small></label>
+      <input type="text" id="w-function" placeholder="你的岗位或职能">
+      <div class="two-col">
+        <div>
+          <label>企业性质</label>
+          <select id="w-type">
+            <option value="">请选择</option>
+            <option>民营 / 私企</option>
+            <option>外资 / 外企</option>
+            <option>国企 / 央企</option>
+            <option>体制内（公务员 / 事业编）</option>
+            <option>创业公司</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div>
+          <label>工作年限</label>
+          <select id="w-years">
+            <option value="">请选择</option>
+            <option>1 年以内</option>
+            <option>1-3 年</option>
+            <option>3-5 年</option>
+            <option>5-10 年</option>
+            <option>10 年以上</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 无业版 -->
+    <div class="seg" id="seg-free">
+      <div class="guide" style="margin-top:14px;">
+        <b>🌱 给暂时无业 / 待业的你：</b><br>
+        空窗期不丢人，它只是一个阶段。请放心填写，我们不会戴着"在职滤镜"给你建议——无业状态下的职业选择，逻辑和在职跳槽是不一样的，我们会用另一套思路帮你看。
+      </div>
+      <label>最近一份工作的行业 + 职能 <small>（如果从未工作过，写"无"）</small></label>
+      <input type="text" id="f-last" placeholder="例如：教育行业，课程顾问（或：无）">
+      <div class="two-col">
+        <div>
+          <label>离开职场多久了？</label>
+          <select id="f-gap">
+            <option value="">请选择</option>
+            <option>3 个月以内</option>
+            <option>3-6 个月</option>
+            <option>6-12 个月</option>
+            <option>1-2 年</option>
+            <option>2 年以上</option>
+            <option>应届 / 从未正式工作</option>
+          </select>
+        </div>
+        <div>
+          <label>离开的主要原因 <small>（选填）</small></label>
+          <select id="f-reason">
+            <option value="">请选择</option>
+            <option>主动离职，想换方向</option>
+            <option>被裁员 / 公司变动</option>
+            <option>照顾家庭</option>
+            <option>身体或情绪原因</option>
+            <option>毕业一直没找到合适的</option>
+            <option>其他</option>
+          </select>
+        </div>
+      </div>
+      <label>目前的经济压力</label>
+      <select id="f-pressure">
+        <option value="">请选择</option>
+        <option>压力较大，需要尽快有收入</option>
+        <option>有一定压力，但可以支撑 3-6 个月</option>
+        <option>压力不大，可以慢慢找</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>第二步 · 说说你的困惑</h2>
+    <label>你的困惑是什么？ <small>（请尽量按下面的提示写，200 字以内也可以）</small></label>
+    <textarea id="pain" placeholder="可以照着这个思路写：
+① 具体场景：什么情况下最难受？（例：每次周一上班路上 / 开完周会之后）
+② 持续多久了？（例：大概半年了）
+③ 试过什么办法？结果如何？
+④ 你最想得到一个什么答案？（例：帮我判断该走还是该熬 / 帮我看看转行的方向）"></textarea>
+    <label>你现在的倾向是？ <small>（选填）</small></label>
+    <select id="lean">
+      <option value="">还没想清楚</option>
+      <option>想离职，但需要有人推一把</option>
+      <option>想坚持，但需要方法</option>
+      <option>想转行，不知道从哪开始</option>
+      <option>只是想把心里的话说出来</option>
+    </select>
+    <label>怎么称呼你？ <small>（选填，昵称即可）</small></label>
+    <input type="text" id="nickname" placeholder="例如：阿 May">
+  </div>
+
+  <button class="gen-btn" onclick="generate()">📝 生成我的留言</button>
+
+  <div id="result">
+    <h3>✅ 留言已生成，复制后发给我们就行</h3>
+    <div class="next">👉 复制下方内容，打开微信 → 搜索公众号 <b>「非正式职场对谈」</b> → 进入后台粘贴发送。工作较忙，回复会慢一些，但每条都会看。</div>
+    <div id="msg-box"></div>
+    <button class="copy-btn" onclick="copyMsg()">复制留言</button>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let status = 'work';
+function setStatus(s) {
+  status = s;
+  document.getElementById('btn-work').classList.toggle('on', s === 'work');
+  document.getElementById('btn-free').classList.toggle('on', s === 'free');
+  document.getElementById('seg-work').classList.toggle('show', s === 'work');
+  document.getElementById('seg-free').classList.toggle('show', s === 'free');
+}
+
+const v = id => (document.getElementById(id).value || '').trim();
+
+function generate() {
+  const pain = v('pain');
+  if (pain.length < 10) { toast('困惑再多写一点点吧（10 字以上）'); return; }
+
+  let msg = '';
+  const nick = v('nickname');
+  if (nick) msg += '【称呼】' + nick + '\n';
+
+  if (status === 'work') {
+    const ind = v('w-industry'), fn = v('w-function'), ty = v('w-type'), ys = v('w-years');
+    if (!ind || !fn || !ty) { toast('在职状态请填完整：行业、职能、企业性质'); return; }
+    msg += '【状态】在职\n';
+    msg += '【行业】' + ind + '\n';
+    msg += '【职能】' + fn + '\n';
+    msg += '【企业性质】' + ty + '\n';
+    if (ys) msg += '【工作年限】' + ys + '\n';
+  } else {
+    const last = v('f-last'), gap = v('f-gap'), prs = v('f-pressure');
+    if (!last || !gap) { toast('无业状态请至少填写：上一份工作、离开时长'); return; }
+    msg += '【状态】无业 / 待业\n';
+    msg += '【最近一份工作】' + last + '\n';
+    msg += '【离开职场时长】' + gap + '\n';
+    const rs = v('f-reason'); if (rs) msg += '【离开原因】' + rs + '\n';
+    if (prs) msg += '【经济压力】' + prs + '\n';
+  }
+
+  msg += '【困惑】' + pain + '\n';
+  const lean = v('lean');
+  if (lean) msg += '【我的倾向】' + lean + '\n';
+
+  document.getElementById('msg-box').textContent = msg;
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+
+function copyMsg() {
+  const text = document.getElementById('msg-box').textContent;
+  navigator.clipboard.writeText(text).then(() => toast('已复制，去公众号后台粘贴吧'), () => toast('复制失败，请手动选择复制'));
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = 1;
+  setTimeout(() => t.style.opacity = 0, 2200);
+}
+</script>
+</body>
+</html>
