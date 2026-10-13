@@ -39,13 +39,6 @@
   textarea { min-height: 130px; resize: vertical; line-height: 1.7; }
   .two-col { display: flex; gap: 12px; flex-wrap: wrap; }
   .two-col > div { flex: 1; min-width: 150px; }
-  .status-row { display: flex; gap: 10px; }
-  .status-btn {
-    flex: 1; padding: 13px; border: 1.5px solid #D8E2D8; border-radius: 12px; background: #FBFDFB;
-    font-size: 15px; font-weight: 600; color: #666; cursor: pointer; text-align: center;
-    transition: all .15s;
-  }
-  .status-btn.on { border-color: #2E7D5B; background: #EAF4EE; color: #1F5C42; }
   .seg { display: none; }
   .seg.show { display: block; }
   .hint { font-size: 12.5px; color: #999; margin-top: 4px; }
@@ -99,15 +92,7 @@
   </div>
 
   <div class="card">
-    <h2>第一步 · 你现在的状态</h2>
-    <label>你目前是？</label>
-    <div class="status-row">
-      <div class="status-btn on" id="btn-work" onclick="setStatus('work')">💼 在职</div>
-      <div class="status-btn" id="btn-free" onclick="setStatus('free')">🌱 无业 / 待业</div>
-    </div>
-
-    <!-- 在职版 -->
-    <div class="seg show" id="seg-work">
+    <h2>第一步 · 你的基本情况</h2>
       <label>行业 <small>（例如：互联网 / 快消 / 制造业 / 教育……）</small></label>
       <input type="text" id="w-industry" placeholder="你所在的行业">
       <label>职能 / 岗位 <small>（例如：产品经理 / 财务 / 销售 / 人力资源……）</small></label>
@@ -139,48 +124,6 @@
       </div>
     </div>
 
-    <!-- 无业版 -->
-    <div class="seg" id="seg-free">
-      <div class="guide" style="margin-top:14px;">
-        <b>🌱 给暂时无业 / 待业的你：</b><br>
-        空窗期不丢人，它只是一个阶段。请放心填写，我们不会戴着"在职滤镜"给你建议——无业状态下的职业选择，逻辑和在职跳槽是不一样的，我们会用另一套思路帮你看。
-      </div>
-      <label>最近一份工作的行业 + 职能 <small>（如果从未工作过，写"无"）</small></label>
-      <input type="text" id="f-last" placeholder="例如：教育行业，课程顾问（或：无）">
-      <div class="two-col">
-        <div>
-          <label>离开职场多久了？</label>
-          <select id="f-gap">
-            <option value="">请选择</option>
-            <option>3 个月以内</option>
-            <option>3-6 个月</option>
-            <option>6-12 个月</option>
-            <option>1-2 年</option>
-            <option>2 年以上</option>
-            <option>应届 / 从未正式工作</option>
-          </select>
-        </div>
-        <div>
-          <label>离开的主要原因 <small>（选填）</small></label>
-          <select id="f-reason">
-            <option value="">请选择</option>
-            <option>主动离职，想换方向</option>
-            <option>被裁员 / 公司变动</option>
-            <option>照顾家庭</option>
-            <option>身体或情绪原因</option>
-            <option>毕业一直没找到合适的</option>
-            <option>其他</option>
-          </select>
-        </div>
-      </div>
-      <label>目前的经济压力</label>
-      <select id="f-pressure">
-        <option value="">请选择</option>
-        <option>压力较大，需要尽快有收入</option>
-        <option>有一定压力，但可以支撑 3-6 个月</option>
-        <option>压力不大，可以慢慢找</option>
-      </select>
-    </div>
   </div>
 
   <div class="card">
@@ -216,15 +159,6 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let status = 'work';
-function setStatus(s) {
-  status = s;
-  document.getElementById('btn-work').classList.toggle('on', s === 'work');
-  document.getElementById('btn-free').classList.toggle('on', s === 'free');
-  document.getElementById('seg-work').classList.toggle('show', s === 'work');
-  document.getElementById('seg-free').classList.toggle('show', s === 'free');
-}
-
 const v = id => (document.getElementById(id).value || '').trim();
 
 function generate() {
@@ -235,24 +169,13 @@ function generate() {
   const nick = v('nickname');
   if (nick) msg += '【称呼】' + nick + '\n';
 
-  if (status === 'work') {
-    const ind = v('w-industry'), fn = v('w-function'), ty = v('w-type'), ys = v('w-years');
-    if (!ind || !fn || !ty) { toast('在职状态请填完整：行业、职能、企业性质'); return; }
-    msg += '【状态】在职\n';
-    msg += '【行业】' + ind + '\n';
-    msg += '【职能】' + fn + '\n';
-    msg += '【企业性质】' + ty + '\n';
-    if (ys) msg += '【工作年限】' + ys + '\n';
-  } else {
-    const last = v('f-last'), gap = v('f-gap'), prs = v('f-pressure');
-    if (!last || !gap) { toast('无业状态请至少填写：上一份工作、离开时长'); return; }
-    msg += '【状态】无业 / 待业\n';
-    msg += '【最近一份工作】' + last + '\n';
-    msg += '【离开职场时长】' + gap + '\n';
-    const rs = v('f-reason'); if (rs) msg += '【离开原因】' + rs + '\n';
-    if (prs) msg += '【经济压力】' + prs + '\n';
-  }
-
+  const ind = v('w-industry'), fn = v('w-function'), ty = v('w-type'), ys = v('w-years');
+  if (!ind || !fn || !ty) { toast('请填完整：行业、职能、企业性质'); return; }
+  msg += '【状态】在职\n';
+  msg += '【行业】' + ind + '\n';
+  msg += '【职能】' + fn + '\n';
+  msg += '【企业性质】' + ty + '\n';
+  if (ys) msg += '【工作年限】' + ys + '\n';
   msg += '【困惑】' + pain + '\n';
   const lean = v('lean');
   if (lean) msg += '【我的倾向】' + lean + '\n';
