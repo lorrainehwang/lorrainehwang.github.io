@@ -92,47 +92,59 @@
   </div>
 
   <div class="intro">
-    不要只给自己一条路。请大胆写下 <b>三个不同版本</b> 的五年计划：它们都值得被认真设计。
-    填完后点击底部按钮，AI 会帮你提炼 <b>三个计划的共同点</b>——那往往就是你内心真正在乎的东西。
+    不要只给自己一条路。请大胆写下 <b>三个不同版本</b> 的五年计划——在《斯坦福大学人生设计课》里，它们没有主次之分，<b>每一个都是 Plan A</b>，都值得被认真对待。
+    填的时候别管「能不能实现」，先写「想不想要」。填完后点击底部按钮，页面会帮你提炼 <b>三个计划的共同点</b>——那往往就是你内心真正在乎的东西。
   </div>
 
   <div class="plan p1">
     <h2>计划一 · 现在的延伸</h2>
-    <div class="sub">沿着当前的路继续走，五年后理想中的一天是什么样的？</div>
-    <label>给这个计划起个名字</label>
+    <div class="sub">顺着现在的路继续走，五年后你会在哪里？（书中的 A 计划）</div>
+    <label>给这个计划起个「六字标题」<small>（像报纸头条一样概括它，例如：深耕本行，安静专家）</small></label>
     <input type="text" id="t1-title" placeholder="例如：深耕本行，成为专家">
-    <label>五年后的一个典型一天 <small>（越具体越好：在哪、做什么、和谁在一起）</small></label>
-    <textarea id="t1-desc" placeholder="例如：早上九点，我在自己的工作室里……"></textarea>
+    <label>五年后的一个典型一天 <small>（写具体：在哪个城市、做什么、和谁在一起、财务状况如何、那天心情如何。<b>工作之外也要写</b>——家庭、健康、爱好都是人生的一部分）</small></label>
+    <textarea id="t1-desc" placeholder="例如：早上九点，我在上海自己的工作室带一个五人小团队……下午四点接孩子，晚上有一段属于自己的阅读时间。收入稳定，不算富裕但很安心。"></textarea>
     <label>这个计划需要什么资源 <small>（时间 / 技能 / 人脉 / 金钱）</small></label>
-    <textarea id="t1-res" placeholder="例如：需要考一个证书、攒一笔启动资金……"></textarea>
-    <label>你对它的投入意愿</label>
+    <textarea id="t1-res" placeholder="例如：需要考一个行业认证、三年内攒下 20 万、认识更多同行……"></textarea>
+    <label>这个计划向你提出的问题 <small>（2-3 个你最想弄明白的）</small></label>
+    <textarea id="t1-q" placeholder="例如：这个行业五年后还在吗？我有深耕十年的耐心吗？"></textarea>
+    <label>你对它的喜欢程度</label>
     <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t1-score"><span class="slider-val" id="t1-val">3 分</span></div>
+    <label>你对它的信心</label>
+    <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t1-conf"><span class="slider-val" id="t1-conf-val">3 分</span></div>
   </div>
 
   <div class="plan p2">
-    <h2>计划二 · 假如现在不能做</h2>
-    <div class="sub">如果现在的工作/行业突然消失了，你会选择做什么？</div>
-    <label>给这个计划起个名字</label>
-    <input type="text" id="t2-title" placeholder="例如：转行做心理咨询">
-    <label>五年后的一个典型一天</label>
-    <textarea id="t2-desc" placeholder="例如：我在一家社区机构做咨询师……"></textarea>
+    <h2>计划二 · 如果现在的生活行不通</h2>
+    <div class="sub">想象你正在做的事突然消失了——行业剧变、公司倒闭、身体亮红灯。不能走老路的你，会做什么？（书中的 B 计划）</div>
+    <label>给这个计划起个「六字标题」</label>
+    <input type="text" id="t2-title" placeholder="例如：换个赛道，重新出发">
+    <label>五年后的一个典型一天 <small>（别怕离谱——这条路的种子，往往一直藏在你心里）</small></label>
+    <textarea id="t2-desc" placeholder="例如：我成了一名职业整理师，上午在客户家梳理空间，下午在社群分享心得……收入不比从前，但每天都很有干劲。"></textarea>
     <label>这个计划需要什么资源</label>
-    <textarea id="t2-res" placeholder="例如：需要系统学习心理学、积累个案时长……"></textarea>
-    <label>你对它的投入意愿</label>
+    <textarea id="t2-res" placeholder="例如：需要系统学习新技能、积累前 100 个客户、预留一年的过渡生活费……"></textarea>
+    <label>这个计划向你提出的问题</label>
+    <textarea id="t2-q" placeholder="例如：我的能力能平移到新领域吗？从头开始的代价我付得起吗？"></textarea>
+    <label>你对它的喜欢程度</label>
     <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t2-score"><span class="slider-val" id="t2-val">3 分</span></div>
+    <label>你对它的信心</label>
+    <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t2-conf"><span class="slider-val" id="t2-conf-val">3 分</span></div>
   </div>
 
   <div class="plan p3">
     <h2>计划三 · 抛开钱和面子</h2>
-    <div class="sub">如果不考虑收入和别人的眼光，你纯粹想做什么？</div>
-    <label>给这个计划起个名字</label>
-    <input type="text" id="t3-title" placeholder="例如：开一间小书店">
-    <label>五年后的一个典型一天</label>
-    <textarea id="t3-desc" placeholder="例如：我在海边的小镇经营一家书店……"></textarea>
+    <div class="sub">如果钱不是问题、没有人在评判你，你纯粹想过什么样的生活？（书中的 C 计划）</div>
+    <label>给这个计划起个「六字标题」</label>
+    <input type="text" id="t3-title" placeholder="例如：海边小书店掌柜">
+    <label>五年后的一个典型一天 <small>（这是梦想版，必须让你自己兴奋起来）</small></label>
+    <textarea id="t3-desc" placeholder="例如：我在大理经营一间只有六间房的小民宿，上午打理院子，下午写东西，傍晚和住客一起做饭……"></textarea>
     <label>这个计划需要什么资源</label>
-    <textarea id="t3-res" placeholder="例如：需要先存够一年生活费……"></textarea>
-    <label>你对它的投入意愿</label>
+    <textarea id="t3-res" placeholder="例如：需要先存够一年生活费、学一点花艺和咖啡、找到合适的院子……"></textarea>
+    <label>这个计划向你提出的问题</label>
+    <textarea id="t3-q" placeholder="例如：如果一辈子只做这件事，我会厌倦吗？"></textarea>
+    <label>你对它的喜欢程度</label>
     <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t3-score"><span class="slider-val" id="t3-val">3 分</span></div>
+    <label>你对它的信心</label>
+    <div class="slider-row"><input type="range" min="1" max="5" value="3" id="t3-conf"><span class="slider-val" id="t3-conf-val">3 分</span></div>
   </div>
 
   <button class="analyze-btn" id="go" onclick="analyze()">✨ 生成我的共同点分析</button>
@@ -152,6 +164,8 @@
 [1,2,3].forEach(i => {
   const s = document.getElementById('t'+i+'-score');
   s.addEventListener('input', () => document.getElementById('t'+i+'-val').textContent = s.value + ' 分');
+  const c = document.getElementById('t'+i+'-conf');
+  c.addEventListener('input', () => document.getElementById('t'+i+'-conf-val').textContent = c.value + ' 分');
 });
 
 const STOP = ['我们','自己','工作','生活','可以','希望','一个','计划','因为','所以','如果','通过','就是','觉得','需要','进行','相关','以及','对于','并且','而且','可能','能够','不会','没有','什么','怎么','这个','那个','这样','那样','现在','未来','五年','之后','然后','但是','时候','方面','一些','一种','还有','已经','正在','让我','我会','我要','我想','成为','拥有','实现','每天','一年','比如','同时','其中','随着','不断','更加','非常','还是','或者','不过','关于','目前','未来','规划','发展'];
@@ -161,7 +175,9 @@ function analyze() {
     title: document.getElementById('t'+i+'-title').value.trim() || ('计划' + '一二三'[i-1]),
     desc: document.getElementById('t'+i+'-desc').value.trim(),
     res: document.getElementById('t'+i+'-res').value.trim(),
-    score: +document.getElementById('t'+i+'-score').value
+    q: document.getElementById('t'+i+'-q').value.trim(),
+    score: +document.getElementById('t'+i+'-score').value,
+    conf: +document.getElementById('t'+i+'-conf').value
   }));
 
   for (const p of plans) {
@@ -185,7 +201,7 @@ function analyze() {
 
 function buildAnalysis(plans) {
   // 提取共同关键词：长度2~5的子串，在≥2个计划中出现
-  const texts = plans.map(p => p.desc + '。' + p.res);
+  const texts = plans.map(p => p.desc + '。' + p.res + '。' + p.q);
   const freq = {};
   for (const t of texts) {
     const seen = new Set();
@@ -239,8 +255,8 @@ function buildAnalysis(plans) {
 
   // 分数最高的计划 + 最小下一步
   const best = plans.slice().sort((a,b) => b.score - a.score)[0];
-  html += '<div class="kv"><b>🚀 最简单的开始：</b>三个计划中，「' + best.title + '」是你投入意愿最高的（' +
-    best.score + ' 分）。不要等准备好再开始，本周就做一个 2 小时能完成的小动作——查一个资料、约一个人聊、写一页草稿。<br>' +
+  html += '<div class="kv"><b>🚀 最简单的开始：</b>三个计划中，「' + best.title + '」是你最喜欢的一个（喜欢 ' +
+    best.score + ' 分 / 信心 ' + best.conf + ' 分）。不要等准备好再开始，本周就做一个 2 小时能完成的小动作——查一个资料、约一个人聊、写一页草稿。<br>' +
     '<span style="color:#888;font-size:13px">奥德赛计划的精髓：不是选对一条路，而是让三条路都活起来。</span></div>';
 
   return html;
